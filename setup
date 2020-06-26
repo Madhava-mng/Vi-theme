@@ -1,0 +1,31 @@
+﻿#!/usr/bin/bash
+G="\033[32;1m"
+N="\033[0m"
+NAME="vi-theme"
+
+function creat_copy(){
+	if [ -d $HOME/.Theme-vim ];then
+		printf "(${G}*${N}) Already satisfy $HOME/.Theme-vim/\n"
+	else
+		mkdir $HOME/.Theme-vim
+		printf "(${G}+${N}) Setup: Directory created $HOME/.Theme-vim/\n"
+		cp -R Vim_color $HOME/.Theme-vim/
+		printf "(${G}+${N}) Setup: Directory copyed.\n"
+	fi
+}
+
+function copy_to_bin(){
+	if [ -d /data/data/com.termux/files/usr/bin ] 2>/dev/null;then
+		cp $NAME /data/data/com.termux/files/usr/bin/
+		printf "(${G}+${N}) Setup: Copyed to bin. run ${G}\" $NAME --help \"${N} .\n"
+	fi
+	if [ -d /usr/bin ] 2>/dev/null;then cp $NAME /usr/bin/ 2>/dev/null
+		printf "(${G}+${N}) Setup: Copyed to bin. run ${G}\" $NAME --help \"${N} .\n"
+	fi
+	if [ -d /bin ] 2>/dev/null;then cp $NAME /bin/ 2>/dev/null
+		#printf "(+) Setup: Copyed to bin. run \"$NAME\" .\n"
+	fi	
+}
+copy_to_bin
+
+creat_copy

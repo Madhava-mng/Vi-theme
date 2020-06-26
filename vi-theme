@@ -1,0 +1,278 @@
+#!/usr/bin/bash
+
+
+COUNT=1
+MAX=1
+LEN=0
+ROW=4
+NUMBER="FALSE"
+LINE="FALSE"
+COLUMN="FALSE"
+THEME="(@)(@)"
+TAB=8
+HIS_C=""
+VERSSION="v0.0.1"
+
+
+# COLOR SCEAM
+G="\033[32m"
+UG="\033[32;4m"
+LG="\033[32;1m"
+R="\033[31m"
+LR="\033[31;1m"
+Y="\033[33m"
+LY="\033[33;1m"
+S="\033[36m"
+LS="\033[36;1m"
+N="\033[0m"
+B="\033[34m"
+P="\033[35;1m"
+W="\033[37;1m"
+
+
+
+IS="TRUE"
+ME="theme"
+NA="vi-"
+function LEN_CHECK(){
+	for i in $(cat $HOME/.Theme-vim/Vim_color/con/.tmp);do
+		if [ ${#i} -gt $LEN ];then
+			LEN=${#i}
+		fi
+	done
+}
+
+function update(){
+	ls $HOME/.Theme-vim/Vim_color/colors > $HOME/.Theme-vim/Vim_color/con/.tmp
+	HIS=$(cat $HOME/.Theme-vim/Vim_color/con/.his 2>/dev/null)   #RECENT
+	HIS2=$(cat $HOME/.Theme-vim/Vim_color/con/.his2 2>/dev/null) #DEBUG HISTORY
+	HIS3=$(cat $HOME/.Theme-vim/Vim_color/con/.his3 2>/dev/null) #ADD HISTORY
+}
+
+function display(){
+	LEN=$((LEN - 4))
+	for i in $(seq 1 $ROW);do printf " ${P}%3s${N}  ${P}%-$LEN.${LEN}s${N} " "Sno" " Name";done;echo""
+	for i in $(seq 1 $ROW);do printf " %3s  %-$LEN.${LEN}s " "---" "------";done;echo""
+	c=1
+	for i in $(cat $HOME/.Theme-vim/Vim_color/con/.tmp);do
+		if [ $IS = "TRUE" ];then
+			if [ $i = $HIS3 ] 2>/dev/null;then HIS_C="$LG";fi  	 # ADD COLOR
+			if [ $i = $HIS2 ] 2>/dev/null;then HIS_C="$LR";fi		#DEBUG COLOR		
+			if [ $i = $HIS ] 2>/dev/null;then HIS_C="$LS";fi		#RECENT COLOR
+			printf "%3s ${B}-${N} ${HIS_C}%-$LEN.${LEN}s${N} " "$COUNT" "${i%%\.vim}" && HIS_C="${N}" # O/P
+			if [ $c -eq $ROW ] 2>/dev/null;then echo"";c=1;else c=$(($c + 1));fi
+			COUNT=$(($COUNT + 1))
+			MAX=$COUNT
+		fi
+	done
+	COUNT=1
+}
+
+function invalied(){
+	printf "(${R}!${N}) Invalied option\n"
+	LINE="FALSE"
+	NUMBER="FALSE"
+}
+
+function option(){
+	printf "\n${S}OPTION${N}: "& read opt
+	for i in $(cat $HOME/.Theme-vim/Vim_color/con/.tmp);do
+		if [ $IS = "TRUE" ];then
+			if [ $opt -gt $(($MAX - 1)) ] 2>/dev/null;then invalied;break;fi
+			if [ $opt -lt 1 ] 2>/dev/null;then invalied; break;fi
+			if [ $COUNT -eq $opt ] 2>/dev/null;then
+				cat $HOME/.Theme-vim/Vim_color/colors/$i > $HOME/.vimrc   # Reset
+				printf "(${G}*${N}) THEME SUCESSFULLY APPLIED\n"
+				echo "set tabstop=$TAB" >> $HOME/.vimrc				# tabsize
+				echo "set shiftwidth=$(($TAB + 0))" >> $HOME/.vimrc # shiftwidth
+				printf "(${G}*${N}) TAB SIZE:${S}${TAB}${N}\n"
+				printf "(${G}*${N}) SHIFT WIDTH:${S}$((${TAB} + 0))${N}\n"
+				if [ $NUMBER = "TRUE" ];then printf "(${G}+${N}) INDUX ENABLED\n";echo "set number" >> $HOME/.vimrc;fi		# Nember set
+				if [ $LINE = "TRUE" ];then printf "(${G}+${N}) LINE ENABLED\n";echo "set cursorline" >> $HOME/.vimrc;fi		# Line set
+				if [ $COLUMN = "TRUE" ];then printf "(${G}+${N}) COLUMN ENABLED\n";echo "set cursorcolumn" >> $HOME/.vimrc;fi	# Column set
+				echo "$i" >  $HOME/.Theme-vim/Vim_color/con/.his;
+				break
+			fi
+			COUNT=$(($COUNT + 1))
+		fi
+	done
+}
+
+function HELP_banner(){
+	for i in {16..21} {21..16} ; do printf "\e[38;5;${i}m${THEME}\e[0m";done;echo
+	printf "${R}Def${N}:
+      vim Theme editing and debugging frame-work.
+${R}Usage${N}:
+    ${NA}${ME} [-h] [-r=<value> --row=<value>]
+             [-l --line][-n --number][-c --column][-t=<value> --tab-size=<value>]
+             [-s --show][-a --add-file][-D --delete][-R --reset][-m --manual-edit]
+             [-d --debug -d=<filename> --debug=<filename>] \n
+
+     ${P}ARGUMENT${N}                           ${P} DISCRIPTION${N}
+     --------                            -----------
+        -a         --add-file          Add edited file.
+                                       ${Y}EG${N}: ${NA}${ME} -a=test_file
+                                       or  ${NA}${ME} --add-file=test2_file
+        -c         --column            Enable Cursor column. (${Y}Vertical Line${N})
+        -d         --debug
+                   --debug=<filename>  Debug saved file.
+                                       ${Y}EG${N}: ${NA}${ME} -d=savedfile
+        -D         --delete=<fname>    Delete saved file.
+        -h         --help              Print Help banner.
+        -l         --line              Enable Cursor line. (${Y}Horizontal Line${N})
+        -m         --manual-edit       Edit vimrc file manually.
+        -n         --number            Enable Index number.
+        -r         --row=<value>       Customize printing rows. (${Y}Default value${N}:4)
+                                       Value must be Integer. (${Y}Specify as first argument${N})
+                                       ${Y}EG${N}: ${NA}${ME} -r=3
+        -R         --reset             Reset vimrc to normal.
+        -s         --show              Show all the file and status.
+        -t         --tab-size=<value>  Customize Tabsize vimrc. (${Y}Default value${N}:8)
+                                       Value must be Integer.
+                                       ${Y}EG${N}: ${NA}${ME} -t=5\n
+${R}Example${N}:
+        ${UG}Normal vimrc edit${N}: ${NA}${ME} --row=3 --tab-size=4 --line --number    
+        ${UG}Debugmode${N}        : ${NA}${ME} --row=2 --debug \n
+${R}INDICATION${N}: [ ${LS}#${N} Selected ] [ ${LG}#${N} Added ] [ ${LR}#${N} Debugged ]\n"
+	for i in {16..21} {21..16} ; do printf "\e[38;5;${i}m${THEME}\e[0m";done;echo
+	exit 1
+}
+
+function Debug(){
+	update
+	LEN_CHECK
+	display
+	printf "\n${S}OPTION FOR DEBUG${N}: "& read opt
+	for i in $(cat $HOME/.Theme-vim/Vim_color/con/.tmp);do
+        if [ $IS = "TRUE" ];then
+		   if [ $opt -gt $(($MAX - 1)) ] 2>/dev/null;then invalied;break;fi
+		   if [ $opt -lt 1 ] 2>/dev/null;then invalied; break;fi
+		   if [ $COUNT -eq $opt ] 2>/dev/null;then vim $HOME/.Theme-vim/Vim_color/colors/$i;echo "$i" > $HOME/.Theme-vim/Vim_color/con/.his2;fi
+	   fi
+	   COUNT=$(($COUNT + 1))
+
+	done
+	exit 1
+}
+
+# ARGUMENTS
+#function Arguments(){
+if true;then
+	for i in $@;do
+		case $i in
+			-r=*|--row=*)
+				ROW="${i##*\=}"
+				if [ $ROW == $NO_GIVEN ] 2>/dev/null;then
+					printf "${S}-r=${N}<value>  ${S}--row=${N}<value> , value range (0 - 7)\n";exit 1
+				fi
+				CHECK="FALSE"
+				for j in $(seq 1 200);do if [ $j -eq $ROW ] 2>/dev/null;then CHECK="TRUE";fi;done
+				if [ $CHECK = "FALSE" ];then printf "(${R}!${N}) Integer required,  ${NA}${ME} -r=<${G}int${N}>\n";exit 1;fi
+				if [ $ROW -lt 1 ];then ROW=1;fi
+				if [ $ROW -gt 7 ];then ROW=7;fi;;
+			-r|--row)
+				printf "${S}-r=${N}<value>  ${S}--row=${N}<value> , value range (0 - 7)\n";exit 1;;
+		    
+			-t=*|--tab-size=*)
+				TAB="${i##*\=}"
+				if [ $TAB == $NO_GIVEN ] 2>/dev/null;then
+					printf "${S}-t=${N}<value>  ${S}--tab-size=${N}<value> , value range (0 - ${Y}~${N}40)\n";exit 1
+				fi
+				CHECK="FALSE"
+				for j in $(seq 1 100);do if [ $j -eq $TAB ] 2>/dev/null;then CHECK="TRUE";fi;done
+				if [ $CHECK = "FALSE" ];then printf "(${R}!${N}) Integer required,  ${NA}${ME} -t=<${G}int${N}>\n";exit 1;fi
+				if [ $TAB -lt 1 ];then TAB=1;fi
+				if [ $TAB -gt 50 ];then TAB=50;fi;;
+		
+			-t|--tab-size)
+				printf "${S}-t=${N}<value>  ${S}--tab-size=${N}<value> , value range (0 - ${Y}~${N}40)\n";exit 1;;
+
+			-n|--number)
+				NUMBER="TRUE";;
+			-l|--line)
+				LINE="TRUE";;
+			-c|--column)
+				COLUMN="TRUE";;
+			-h|--help)
+				HELP_banner;;
+
+			-m|--manual-edit)
+				vim $HOME/.vimrc;exit 1;;
+
+			-R|--reset)
+				cd $HOME/.Theme-vim/Vim_color/con;printf "\"Reseted on ${R}$(date)${N}\n"  | tee $HOME/.vimrc && $(rm .his .his2 .his3 2>/dev/null); exit 1;;
+
+			-a=*|--add-file=*)
+				FILE="${i##*\=}"
+				if [ $FILE = $No_given ] 2>/dev/null;then printf "${S}-a=${N}<filename>  ${S}--add-file=${N}<filename>.\n";exit 1;fi
+				if [ -f $FILE ];then
+					if [ -f $HOME/.Theme-vim/Vim_color/colors/$FILE.vim ];then
+						printf "(${Y}!${N}) FILE RE-WRITTEN SUCESSFULLY.\n"
+					else
+						printf "(${G}+${N}) SUCESSFULLY ADDED.\n"
+					fi
+					cp $FILE $HOME/.Theme-vim/Vim_color/colors/$FILE.vim
+					echo "$FILE.vim" > $HOME/.Theme-vim/Vim_color/con/.his3
+					printf "(${G}*${N}) FILENAME: ${FILE}\n";
+				else
+					printf "(${R}!${N}) ${R}${FILE}${N} NOT FOUND.\n"
+				fi;exit 1;;
+		
+			-a|--add-file)
+				printf "${S}-a=${N}<filename>  ${S}--add-file=${N}<filename>.\n";exit 1;;
+
+			-d=*|--debug=*)
+				FILE="${i##*\=}"
+				if [ $FILE = $No_given ] 2>/dev/null;then printf "${S}-d=${N}<filename>  ${S}--debug=${N}<filename>.\n";exit 1;fi
+				if [ -f $HOME/.Theme-vim/Vim_color/colors/$FILE.vim ] 2>/dev/null;then
+					vim $HOME/.Theme-vim/Vim_color/colors/$FILE.vim
+					echo "$FILE.vim" > $HOME/.Theme-vim/Vim_color/con/.his2
+				else
+					printf "(${Y}!${N}) NO SUCH A FILE FOUND AS \"${R}${FILE}${N}\" TO DEBUG\n(${G}*${N}) ADD SOME FILE \n"
+				fi;exit 1;;
+			-d|--debug)
+				Debug;;
+
+			-D=*|--delete=*)
+				FILE="${i##*\=}"
+				if [ $FILE = $No_given ] 2>/dev/null;then printf "${S}-D=${N}<filename>  ${S}--delete=${N}<filename>.\n";exit 1;fi
+				if [ -f $HOME/.Theme-vim/Vim_color/colors/$FILE.vim ];then 
+					rm $HOME/.Theme-vim/Vim_color/colors/$FILE.vim
+					printf "(${G}-${N}) SUCESSFULLY DELETED.\n"
+					printf "(${G}*${N}) FILENAME: ${FILE}\n";exit 1
+				else
+					printf "(${Y}!${N}) NO SUCH A FILE FOUND AS \"${R}${FILE}${N}\" TO DELETE\n"
+				fi;exit 1;;
+			-s|--show)
+				update;LEN_CHECK;display;echo "";exit 2;;
+		
+			-D|--delete)
+				printf "${S}-D=${N}<filename>  ${S}--delete=${N}<filename>.\n";exit 1;;
+
+			*)
+				printf "(${R}!${N}) Invalied argument. Try  ${NA}${ME} ${S}--help${N}\n" && exit 1;;
+		esac
+	done
+fi
+
+
+function BANNER(){
+	printf "${G}
+█████████
+█▄█████▄█ 
+█▼▼▼▼▼▼▼▼
+█▲▲▲▲▲▲▲▲
+█████████      << VIM THEME EDITING & DEBUGGING FRAME-WORK >>   ${N}(${LY}${VERSSION}${N})${G}
+_██___██_________________________________________________________________ ${N}\n\n\n"
+}
+
+function SETUP(){
+	if [ -d $HOME/.Theme-vim/ ] 2>/dev/null;then printf "";else ./setup 2>/dev/null;exit 1;fi
+}
+
+BANNER
+SETUP
+update
+LEN_CHECK
+display
+option
