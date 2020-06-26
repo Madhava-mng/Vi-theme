@@ -16,7 +16,7 @@
 ***
 
 ## Screen-shot:
-<src=".Image/">
+<img src=".Image/">
 
 
 
