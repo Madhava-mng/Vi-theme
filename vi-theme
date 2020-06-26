@@ -11,7 +11,6 @@ COLUMN="FALSE"
 THEME="(@)(@)"
 TAB=8
 HIS_C=""
-VERSSION="v0.0.1"
 
 
 # COLOR SCEAM
@@ -30,10 +29,21 @@ P="\033[35;1m"
 W="\033[37;1m"
 
 
-
+VERSSION="${N}(${LY}v1.0.0${N})"
 IS="TRUE"
 ME="theme"
 NA="vi-"
+
+
+function Author(){
+	printf "
+${LR}Name    ${N}: vi-theme
+${LR}Verssion${N}: ${VERSSION}
+${LR}Author  ${N}: Madhava
+${LR}Script  ${N}: vim,bash
+${LR}Org     ${N}: ${UG}https://github.com/RED-5-CRACKERS${N}\n"
+}
+
 function LEN_CHECK(){
 	for i in $(cat $HOME/.Theme-vim/Vim_color/con/.tmp);do
 		if [ ${#i} -gt $LEN ];then
@@ -129,7 +139,8 @@ ${R}Usage${N}:
         -s         --show              Show all the file and status.
         -t         --tab-size=<value>  Customize Tabsize vimrc. (${Y}Default value${N}:8)
                                        Value must be Integer.
-                                       ${Y}EG${N}: ${NA}${ME} -t=5\n
+                                       ${Y}EG${N}: ${NA}${ME} -t=5
+        -A         --about             About.\n
 ${R}Example${N}:
         ${UG}Normal vimrc edit${N}: ${NA}${ME} --row=3 --tab-size=4 --line --number    
         ${UG}Debugmode${N}        : ${NA}${ME} --row=2 --debug \n
@@ -220,6 +231,8 @@ if true;then
 		
 			-a|--add-file)
 				printf "${S}-a=${N}<filename>  ${S}--add-file=${N}<filename>.\n";exit 1;;
+			-A|--about)
+				Author && exit 1;;
 
 			-d=*|--debug=*)
 				FILE="${i##*\=}"
@@ -262,7 +275,7 @@ function BANNER(){
 █▄█████▄█ 
 █▼▼▼▼▼▼▼▼
 █▲▲▲▲▲▲▲▲
-█████████      << VIM THEME EDITING & DEBUGGING FRAME-WORK >>   ${N}(${LY}${VERSSION}${N})${G}
+█████████      << VIM THEME EDITING & DEBUGGING FRAME-WORK >>   ${N}${VERSSION}${G}
 _██___██_________________________________________________________________ ${N}\n\n\n"
 }
 
