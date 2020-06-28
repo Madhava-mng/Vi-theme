@@ -1,5 +1,7 @@
 ## Vi-theme
-Vim Theme editing and debugging frame-work
+Vim Theme editing and debugging frame-work.
+
+Easy to use. I chage my theme every time.I use it for quickly change the theme.And create own themes for further use.
 
 ## Installation:
     git clone https://github.com/Madhava-mng/Vi-theme.git && cd Vi-theme && ./setup
