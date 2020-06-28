@@ -21,7 +21,7 @@ Easy to use. I chage my theme every time.I use it for quickly change the theme.A
 <img src=".Image/i0.jpg">
 <img src=".Image/i1.jpg">
 <img src=".Image/i2.jpg">
-<img src=".Image/i3.jpg">
+
 <img src=".Image/i4.jpg">
 <img src=".Image/i5.jpg">
 
