@@ -29,7 +29,7 @@ P="\033[35;1m"
 W="\033[37;1m"
 
 
-VERSSION="${N}(${LY}v1.0.0${N})"
+VERSSION="${N}(${LY}v1.0.1${N})"
 IS="TRUE"
 ME="theme"
 NA="vi-"
