@@ -133,7 +133,7 @@ ${R}Usage${N}:
         -m         --manual-edit       Edit vimrc file manually.
         -n         --number            Enable Index number.
         -r         --row=<value>       Customize printing rows. (${Y}Default value${N}:4)
-                                       Value must be Integer. (${Y}Specify as first argument${N})
+                                       Value must be Integer. 
                                        ${Y}EG${N}: ${NA}${ME} -r=3
         -R         --reset             Reset vimrc to normal.
         -s         --show              Show all the file and status.
