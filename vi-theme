@@ -11,7 +11,7 @@ COLUMN="FALSE"
 THEME="(@)(@)"
 TAB=8
 HIS_C=""
-
+SHOW="FALSE"
 
 # COLOR SCEAM
 G="\033[32m"
@@ -67,9 +67,9 @@ function display(){
 	for i in $(cat $HOME/.Theme-vim/Vim_color/con/.tmp);do
 		if [ $IS = "TRUE" ];then
 			if [ $i = $HIS3 ] 2>/dev/null;then HIS_C="$LG";fi  	 # ADD COLOR
-			if [ $i = $HIS2 ] 2>/dev/null;then HIS_C="$LR";fi		#DEBUG COLOR		
+			if [ $i = $HIS2 ] 2>/dev/null;then HIS_C="$P";fi		#DEBUG COLOR		
 			if [ $i = $HIS ] 2>/dev/null;then HIS_C="$LS";fi		#RECENT COLOR
-			printf "%3s ${B}-${N} ${HIS_C}%-$LEN.${LEN}s${N} " "$COUNT" "${i%%\.vim}" && HIS_C="${N}" # O/P
+			printf "${R}%3s${N} ${B}-${N} ${HIS_C}%-$LEN.${LEN}s${N} " "$COUNT" "${i%%\.vim}" && HIS_C="${N}" # O/P
 			if [ $c -eq $ROW ] 2>/dev/null;then echo"";c=1;else c=$(($c + 1));fi
 			COUNT=$(($COUNT + 1))
 			MAX=$COUNT
@@ -115,14 +115,14 @@ function HELP_banner(){
 ${R}Usage${N}:
     ${NA}${ME} [-h] [-r=<value> --row=<value>]
              [-l --line][-n --number][-c --column][-t=<value> --tab-size=<value>]
-             [-s --show][-a --add-file][-D --delete][-R --reset][-m --manual-edit]
+             [-s --show][-a --add][-D --delete][-R --reset][-m --manual-edit]
              [-d --debug -d=<filename> --debug=<filename>] \n
 
      ${P}ARGUMENT${N}                           ${P} DISCRIPTION${N}
      --------                            -----------
-        -a         --add-file          Add edited file.
+        -a         --add               Add New vimrc file to database.
                                        ${Y}EG${N}: ${NA}${ME} -a=test_file
-                                       or  ${NA}${ME} --add-file=test2_file
+                                       or  ${NA}${ME} --add1=test2_file
         -c         --column            Enable Cursor column. (${Y}Vertical Line${N})
         -d         --debug
                    --debug=<filename>  Debug saved file.
@@ -144,7 +144,7 @@ ${R}Usage${N}:
 ${R}Example${N}:
         ${UG}Normal vimrc edit${N}: ${NA}${ME} --row=3 --tab-size=4 --line --number    
         ${UG}Debugmode${N}        : ${NA}${ME} --row=2 --debug \n
-${R}INDICATION${N}: [ ${LS}#${N} Selected ] [ ${LG}#${N} Added ] [ ${LR}#${N} Debugged ]\n"
+${R}INDICATION${N}: [ ${LS}#${N} Selected ] [ ${LG}#${N} Added ] [ ${P}#${N} Debugged ]\n"
 	for i in {16..21} {21..16} ; do printf "\e[38;5;${i}m${THEME}\e[0m";done;echo
 	exit 1
 }
@@ -213,9 +213,9 @@ if true;then
 			-R|--reset)
 				cd $HOME/.Theme-vim/Vim_color/con;printf "\"Reseted on ${R}$(date)${N}\n"  | tee $HOME/.vimrc && $(rm .his .his2 .his3 2>/dev/null); exit 1;;
 
-			-a=*|--add-file=*)
+			-a=*|--add=*)
 				FILE="${i##*\=}"
-				if [ $FILE = $No_given ] 2>/dev/null;then printf "${S}-a=${N}<filename>  ${S}--add-file=${N}<filename>.\n";exit 1;fi
+				if [ $FILE = $No_given ] 2>/dev/null;then printf "${S}-a=${N}<filename>  ${S}--add=${N}<filename>.\n";exit 1;fi
 				if [ -f $FILE ];then
 					if [ -f $HOME/.Theme-vim/Vim_color/colors/$FILE.vim ];then
 						printf "(${Y}!${N}) FILE RE-WRITTEN SUCESSFULLY.\n"
@@ -229,8 +229,8 @@ if true;then
 					printf "(${R}!${N}) ${R}${FILE}${N} NOT FOUND.\n"
 				fi;exit 1;;
 		
-			-a|--add-file)
-				printf "${S}-a=${N}<filename>  ${S}--add-file=${N}<filename>.\n";exit 1;;
+			-a|--add)
+				printf "${S}-a=${N}<filename>  ${S}--add=${N}<filename>.\n";exit 1;;
 			-A|--about)
 				Author && exit 1;;
 
@@ -244,7 +244,7 @@ if true;then
 					printf "(${Y}!${N}) NO SUCH A FILE FOUND AS \"${R}${FILE}${N}\" TO DEBUG\n(${G}*${N}) ADD SOME FILE \n"
 				fi;exit 1;;
 			-d|--debug)
-				Debug;;
+				DEBUG="TRUE";;
 
 			-D=*|--delete=*)
 				FILE="${i##*\=}"
@@ -257,7 +257,8 @@ if true;then
 					printf "(${Y}!${N}) NO SUCH A FILE FOUND AS \"${R}${FILE}${N}\" TO DELETE\n"
 				fi;exit 1;;
 			-s|--show)
-				update;LEN_CHECK;display;echo "";exit 2;;
+				SHOW="TRUE";;
+				#update;LEN_CHECK;display;echo "";exit 2;;
 		
 			-D|--delete)
 				printf "${S}-D=${N}<filename>  ${S}--delete=${N}<filename>.\n";exit 1;;
@@ -288,4 +289,6 @@ SETUP
 update
 LEN_CHECK
 display
-option
+if [ $DEBUG = "TRUE" ] 2>/dev/null;then Debug;exit 1;fi
+if [ $SHOW = "FALSE" ] 2>/dev/null;then option;fi
+echo ""

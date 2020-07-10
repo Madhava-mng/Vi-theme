@@ -1,5 +1,6 @@
-﻿#!/usr/bin/bash
+﻿#!/bin/bash
 
+none=0
 G="\033[32;1m"
 N="\033[0m"
 NAME="vi-theme"

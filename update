@@ -1,0 +1,5 @@
+#!/bin/bash
+printf "\033[32m"
+git pull || sudo git pull 2>/dev/null
+printf "\033[0m\n"
+./setup
