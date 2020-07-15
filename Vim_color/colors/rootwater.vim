@@ -93,6 +93,6 @@ if version >= 700
   hi TabLineSel	  guifg=#88ee99	guibg=black	gui=None
 endif
 
-finish
+"finish
 
 " vim:set ts=8 sts=2 sw=2 tw=0:
