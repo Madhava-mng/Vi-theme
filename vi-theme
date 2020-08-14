@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 VIMPATH="$HOME/.vimrc"
 
@@ -35,6 +35,10 @@ VERSSION="${N}(${LY}v1.0.1${N})"
 IS="TRUE"
 ME="theme"
 NA="vi-"
+TMP=$(which ls)
+TMP2="share/"
+VI_PATH=${TMP%%bin/ls}$TMP2
+echo $VI_PATH
 
 
 function Author(){
