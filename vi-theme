@@ -1,6 +1,8 @@
 #!/bin/bash
 
 VIMPATH="$HOME/.vimrc"
+NVIMPATH="$HOME/.config/nvim/init.vim"
+NVIMDIR="$HOME/.config/nvim"
 
 COUNT=1
 MAX=1
@@ -401,4 +403,9 @@ LEN_CHECK
 if [ $DEBUG = "TRUE" ] 2>/dev/null;then Debug;exit 1;fi
 display
 if [ $SHOW = "FALSE" ] 2>/dev/null;then option;fi
+mkdir $NVIMDIR 2>/dev/null
+cp $VIMPATH $NVIMPATH 
+#echo $VIMPATH $NVIMPATH 
+printf "(${G}^${N}) Updated config to neo-vim\n"
+
 echo ""
